@@ -49,7 +49,7 @@ public class OrderItem extends BaseEntity<OrderItemId> {
         this.subTotal = subTotal;
     }
 
-//  CHECK VALUE IS PRICE IS VALID
+//  CHECK VALUE OF PRICE IS VALID
     public boolean isPriceValid() {
         return price.isGreaterThanZero() && price.equals(product.getPrice()) && price.multiply(quantity).equals(subTotal);
     }
