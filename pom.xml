@@ -38,6 +38,11 @@
             </dependency>
             <dependency>
                 <groupId>co.istad.haklyhout</groupId>
+                <artifactId>common-restapi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>co.istad.haklyhout</groupId>
                 <artifactId>order-application-service</artifactId>
                 <version>${project.version}</version>
             </dependency>
