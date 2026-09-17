@@ -1,4 +1,4 @@
-package co.istad.lyhout.ecommerce.order.domain.Exception;
+package co.istad.lyhout.ecommerce.order.domain.exception;
 
 import co.istad.haklyhout.ecommerce.domain.exception.DomainException;
 

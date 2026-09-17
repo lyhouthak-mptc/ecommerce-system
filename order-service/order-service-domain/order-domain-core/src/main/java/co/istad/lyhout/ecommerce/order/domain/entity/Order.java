@@ -2,7 +2,7 @@ package co.istad.lyhout.ecommerce.order.domain.entity;
 
 import co.istad.haklyhout.ecommerce.domain.entity.AggregateRoot;
 import co.istad.haklyhout.ecommerce.domain.valueobject.*;
-import co.istad.lyhout.ecommerce.order.domain.Exception.OrderDomainException;
+import co.istad.lyhout.ecommerce.order.domain.exception.OrderDomainException;
 
 import java.util.List;
 import java.util.UUID;

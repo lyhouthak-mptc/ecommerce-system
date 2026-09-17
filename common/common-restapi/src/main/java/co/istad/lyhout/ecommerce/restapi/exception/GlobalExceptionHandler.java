@@ -20,11 +20,11 @@ public class GlobalExceptionHandler {
         return RestApiErrorResponse.builder()
                 .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .message("Data Validation Failed")
-                .detail(extractFieldError(e.getFieldErrors()))
+                .detail(extractFieldErrors(e.getFieldErrors()))
                 .build();
     }
 
-    private List<FieldErrorResponse> extractFieldError(
+    private List<FieldErrorResponse> extractFieldErrors(
             List<FieldError> fieldErrors
     ) {
         return fieldErrors.stream()
