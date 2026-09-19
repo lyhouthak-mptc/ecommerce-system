@@ -15,6 +15,10 @@ public class Customer extends AggregateRoot<CustomerId> {
         givenName = builder.givenName;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static final class Builder {
         private CustomerId id;
         private String username;
