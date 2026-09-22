@@ -20,9 +20,9 @@ public class OrderItemEntity {
 
     private UUID productId;
 
-    private Integer quantity;
+    private BigDecimal subTotal;
     private String productName;
-    private BigDecimal productPrice;
+    private BigDecimal price;
 
 
     @ManyToOne()
