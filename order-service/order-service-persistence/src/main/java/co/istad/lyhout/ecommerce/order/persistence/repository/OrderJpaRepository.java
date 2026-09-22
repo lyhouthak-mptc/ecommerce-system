@@ -13,7 +13,4 @@ import java.util.UUID;
 // 5. Specification dynamic query
 
 public interface OrderJpaRepository extends JpaRepository<OrderEntity, UUID> {
-
-    
-
 }

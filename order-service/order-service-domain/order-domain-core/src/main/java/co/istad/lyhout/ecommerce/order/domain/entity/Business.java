@@ -19,7 +19,7 @@ public class Business extends AggregateRoot<BusinessId> {
         return products;
     }
 
-    public static Builder newBuilder() {
+    public static Builder builder() {
         return new Builder();
     }
 

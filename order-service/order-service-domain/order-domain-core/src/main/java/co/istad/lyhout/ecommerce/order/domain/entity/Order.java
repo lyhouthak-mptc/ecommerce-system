@@ -8,38 +8,6 @@ import java.util.List;
 import java.util.UUID;
 
 public class Order extends AggregateRoot<OrderId> {
-    public CustomerId getCustomerId() {
-        return customerId;
-    }
-
-    public BusinessId getBusinessId() {
-        return businessId;
-    }
-
-    public StreetAddress getDeliveryAddress() {
-        return deliveryAddress;
-    }
-
-    public Money getPrice() {
-        return price;
-    }
-
-    public List<OrderItem> getItems() {
-        return items;
-    }
-
-    public TrackingId getTrackingId() {
-        return trackingId;
-    }
-
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
-    }
-
-    public List<String> getFailureMessages() {
-        return failureMessages;
-    }
-
     private final CustomerId customerId;
     private final BusinessId businessId;
     private final StreetAddress deliveryAddress;
@@ -142,6 +110,43 @@ public class Order extends AggregateRoot<OrderId> {
         }
         orderStatus = OrderStatus.CANCELLED;
         updateFailureMessages(failureMessages);
+    }
+
+//    ============ accessors ===============
+    public CustomerId getCustomerId() {
+        return customerId;
+    }
+
+    public BusinessId getBusinessId() {
+        return businessId;
+    }
+
+    public StreetAddress getDeliveryAddress() {
+        return deliveryAddress;
+    }
+
+    public Money getPrice() {
+        return price;
+    }
+
+    public List<OrderItem> getItems() {
+        return items;
+    }
+
+    public TrackingId getTrackingId() {
+        return trackingId;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public List<String> getFailureMessages() {
+        return failureMessages;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     private Order(Builder builder) {
