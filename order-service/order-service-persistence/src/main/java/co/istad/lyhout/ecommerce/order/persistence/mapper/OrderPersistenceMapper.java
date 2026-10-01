@@ -1,18 +1,70 @@
 package co.istad.lyhout.ecommerce.order.persistence.mapper;
 
-import co.istad.lyhout.ecommerce.order.domain.entity.Business;
-import co.istad.lyhout.ecommerce.order.domain.entity.Customer;
-import co.istad.lyhout.ecommerce.order.persistence.entity.BusinessEntity;
-import co.istad.lyhout.ecommerce.order.persistence.entity.CustomerEntity;
+import co.istad.haklyhout.ecommerce.domain.valueobject.StreetAddress;
+import co.istad.lyhout.ecommerce.order.domain.entity.Order;
+import co.istad.lyhout.ecommerce.order.domain.entity.OrderItem;
+import co.istad.lyhout.ecommerce.order.persistence.entity.OrderAddressEntity;
+import co.istad.lyhout.ecommerce.order.persistence.entity.OrderEntity;
+import co.istad.lyhout.ecommerce.order.persistence.entity.OrderItemEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface OrderPersistenceMapper {
-    @Mapping(source = "id", target = "id.value")
-    Customer customerEntityToCustomer(CustomerEntity customerEntity);
 
-    @Mapping(source = "businessId", target = "id.value")
-    Business businessEntityToBusiness(BusinessEntity businessEntity);
+    @Mapping(source = "id.value", target = "id")
+    @Mapping(source = "customerId.value", target = "customerId")
+    @Mapping(source = "businessId.value", target = "businessId")
+    @Mapping(source = "price.amount", target = "price")
+    @Mapping(source = "trackingId.value", target = "trackingId")
+    @Mapping(source = "failureMessages", target = "failureMessages", qualifiedByName = "mapFailureMessages")
+    @Mapping(source = "deliveryAddress", target = "orderAddress")
+    OrderEntity orderToOrderEntity(Order order);
+
+    @Mapping(target = "id", expression = "java(UUID.randomUUID())")
+    OrderAddressEntity deliveryAddressToOrderAddressEntity(StreetAddress deliveryAddress);
+
+    @Named("mapFailureMessages")
+    default String mapFailureMessages(List<String> failureMessages) {
+        // A freshly created order has no failure messages yet
+        return failureMessages == null ? null : String.join(",", failureMessages);
+    }
+
+
+    // Issue Map List<OrderItem> to List<OrderItemEntity>
+    @Mapping(source = "id.value", target = "id")
+    @Mapping(source = "product.id.value", target = "productId")
+    @Mapping(source = "price.amount", target = "price")
+    @Mapping(source = "subTotal.amount", target = "subTotal")
+    OrderItemEntity orderItemToOrderItemEntity(OrderItem orderItem);
+
+    @Mapping(target = "id.value", source = "id")
+    @Mapping(target = "customerId.value", source = "customerId")
+    @Mapping(target = "businessId.value", source = "businessId")
+    @Mapping(target = "price.amount", source = "price")
+    @Mapping(target = "trackingId.value", source = "trackingId")
+    @Mapping(target = "failureMessages", source = "failureMessages", qualifiedByName = "mapFailureMessagesToList")
+    @Mapping(target = "deliveryAddress", source = "orderAddress")
+    Order orderEntityToOrder(OrderEntity orderEntity);
+
+    // Map OrderAddressEntity to StreetAddress
+    @Mapping(target = "street", source = "streetName")
+    StreetAddress orderAddressEntityToStreetAddress(OrderAddressEntity orderAddressEntity);
+
+    // Issue Map List<OrderItemEntity> to List<OrderItem>
+    @Mapping(target = "id.value", source = "id")
+    @Mapping(target = "product.id.value", source = "productId")
+    @Mapping(target = "price.amount", source = "price")
+    @Mapping(target = "subTotal.amount", source = "subTotal")
+    OrderItem orderItemEntityToOrderItem(OrderItemEntity orderItemEntity);
+
+    @Named("mapFailureMessagesToList")
+    default List<String> mapFailureMessagesToList(String failureMessages) {
+        return failureMessages == null ? null : Arrays.stream(failureMessages.split(",")).toList();
+    }
 
 }

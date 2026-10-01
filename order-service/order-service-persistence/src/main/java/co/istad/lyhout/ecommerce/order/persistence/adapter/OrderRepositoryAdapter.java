@@ -2,6 +2,8 @@ package co.istad.lyhout.ecommerce.order.persistence.adapter;
 
 import co.istad.lyhout.ecommerce.order.domain.entity.Order;
 import co.istad.lyhout.ecommerce.order.domain.port.output.OrderRepository;
+import co.istad.lyhout.ecommerce.order.persistence.entity.OrderEntity;
+import co.istad.lyhout.ecommerce.order.persistence.mapper.OrderPersistenceMapper;
 import co.istad.lyhout.ecommerce.order.persistence.repository.OrderJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -11,11 +13,25 @@ import org.springframework.stereotype.Repository;
 public class OrderRepositoryAdapter implements OrderRepository {
 
     private final OrderJpaRepository orderJpaRepository;
+    private final OrderPersistenceMapper orderPersistenceMapper;
 
 
     @Override
     public Order saveOrder(Order order) {
-        return null;
+
+        // Map Order to OrderEntity
+        OrderEntity orderEntity = orderPersistenceMapper.orderToOrderEntity(order);
+
+        orderEntity.getOrderAddress().setOrder(orderEntity);
+
+        orderEntity.getItems().forEach(orderItemEntity -> orderItemEntity.setOrder(orderEntity));
+
+
+        // Map order into database
+        OrderEntity saveOrderEntity = orderJpaRepository.save(orderEntity);
+        // Mpa OrderEntity to Order
+        return orderPersistenceMapper.orderEntityToOrder(orderJpaRepository.save(saveOrderEntity));
+
     }
 
 }
