@@ -22,7 +22,15 @@ public class OrderRepositoryAdapter implements OrderRepository {
         // Map Order to OrderEntity
         OrderEntity orderEntity = orderPersistenceMapper.orderToOrderEntity(order);
 
-        return orderPersistenceMapper.orderEntityToOrder(orderJpaRepository.save(orderEntity));
+        orderEntity.getOrderAddress().setOrder(orderEntity);
+
+        orderEntity.getItems().forEach(orderItemEntity -> orderItemEntity.setOrder(orderEntity));
+
+
+        // Map order into database
+        OrderEntity saveOrderEntity = orderJpaRepository.save(orderEntity);
+        // Mpa OrderEntity to Order
+        return orderPersistenceMapper.orderEntityToOrder(orderJpaRepository.save(saveOrderEntity));
 
     }
 

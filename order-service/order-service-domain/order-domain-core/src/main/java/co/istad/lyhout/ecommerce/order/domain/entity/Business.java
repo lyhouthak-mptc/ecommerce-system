@@ -15,6 +15,10 @@ public class Business extends AggregateRoot<BusinessId> {
         active = builder.active;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
     public List<Product> getProducts() {
         return products;
     }

@@ -1,7 +1,9 @@
 package co.istad.lyhout.ecommerce.order.persistence.mapper;
 
+import co.istad.haklyhout.ecommerce.domain.valueobject.StreetAddress;
 import co.istad.lyhout.ecommerce.order.domain.entity.Order;
 import co.istad.lyhout.ecommerce.order.domain.entity.OrderItem;
+import co.istad.lyhout.ecommerce.order.persistence.entity.OrderAddressEntity;
 import co.istad.lyhout.ecommerce.order.persistence.entity.OrderEntity;
 import co.istad.lyhout.ecommerce.order.persistence.entity.OrderItemEntity;
 import org.mapstruct.Mapper;
@@ -20,11 +22,16 @@ public interface OrderPersistenceMapper {
     @Mapping(source = "price.amount", target = "price")
     @Mapping(source = "trackingId.value", target = "trackingId")
     @Mapping(source = "failureMessages", target = "failureMessages", qualifiedByName = "mapFailureMessages")
+    @Mapping(source = "deliveryAddress", target = "orderAddress")
     OrderEntity orderToOrderEntity(Order order);
+
+    @Mapping(target = "id", expression = "java(UUID.randomUUID())")
+    OrderAddressEntity deliveryAddressToOrderAddressEntity(StreetAddress deliveryAddress);
 
     @Named("mapFailureMessages")
     default String mapFailureMessages(List<String> failureMessages) {
-        return String.join(",", failureMessages);
+        // A freshly created order has no failure messages yet
+        return failureMessages == null ? null : String.join(",", failureMessages);
     }
 
 
@@ -41,7 +48,12 @@ public interface OrderPersistenceMapper {
     @Mapping(target = "price.amount", source = "price")
     @Mapping(target = "trackingId.value", source = "trackingId")
     @Mapping(target = "failureMessages", source = "failureMessages", qualifiedByName = "mapFailureMessagesToList")
+    @Mapping(target = "deliveryAddress", source = "orderAddress")
     Order orderEntityToOrder(OrderEntity orderEntity);
+
+    // Map OrderAddressEntity to StreetAddress
+    @Mapping(target = "street", source = "streetName")
+    StreetAddress orderAddressEntityToStreetAddress(OrderAddressEntity orderAddressEntity);
 
     // Issue Map List<OrderItemEntity> to List<OrderItem>
     @Mapping(target = "id.value", source = "id")
@@ -52,7 +64,7 @@ public interface OrderPersistenceMapper {
 
     @Named("mapFailureMessagesToList")
     default List<String> mapFailureMessagesToList(String failureMessages) {
-        return Arrays.stream(failureMessages.split(",")).toList();
+        return failureMessages == null ? null : Arrays.stream(failureMessages.split(",")).toList();
     }
 
 }

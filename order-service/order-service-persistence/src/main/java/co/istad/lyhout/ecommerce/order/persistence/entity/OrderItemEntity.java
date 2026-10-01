@@ -1,5 +1,6 @@
 package co.istad.lyhout.ecommerce.order.persistence.entity;
 
+import co.istad.haklyhout.ecommerce.domain.valueobject.OrderItemId;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,9 +14,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "order_items")
+@IdClass(OrderItemIdEntity.class)
 public class OrderItemEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private UUID productId;
@@ -24,7 +25,7 @@ public class OrderItemEntity {
     private String productName;
     private BigDecimal price;
 
-
+    @Id
     @ManyToOne()
     private OrderEntity order;
 }
