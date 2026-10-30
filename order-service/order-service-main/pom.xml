@@ -12,6 +12,13 @@
     <artifactId>order-service-main</artifactId>
 
     <dependencies>
+
+        <!-- OAuth2 Resource Server (validate JWT from Keycloak) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security-oauth2-resource-server</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>co.istad.haklyhout</groupId>
             <artifactId>order-domain-core</artifactId>
@@ -75,6 +82,12 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
+        </dependency>
+
+        <!-- API Documentation (OpenAPI / Swagger UI) -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
         </dependency>
     </dependencies>
 

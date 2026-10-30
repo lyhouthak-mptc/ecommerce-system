@@ -3,6 +3,8 @@ package co.istad.lyhout.ecommerce.order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +27,14 @@ public class NacosConfigController {
         );
     }
 
-
+    @GetMapping("/secured")
+    public Map<String, Object> getSecuredConfig(@AuthenticationPrincipal Jwt jwt) {
+        return Map.of(
+                "serviceName", nacosConfigProps.getName(),
+                "serviceInfo", nacosConfigProps.getBasicInfo(),
+                "serviceVersion", nacosConfigProps.getVersion(),
+                "accessToken", jwt.getTokenValue()
+        );
+    }
 
 }

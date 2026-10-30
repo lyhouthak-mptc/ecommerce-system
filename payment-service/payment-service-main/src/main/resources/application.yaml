@@ -1,13 +1,21 @@
 # Change payment service running port
 server:
   port: 0
+  # respect X-Forwarded-* headers sent by gateway (Swagger "Try it out" via gateway)
+  forward-headers-strategy: framework
 spring:
   application:
     name: payment-service
   profiles:
     active: dev
+  config:
+    import:
+      - optional:nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
   cloud:
     nacos:
+      config:
+        file-extension: yaml
+        namespace: ${spring.profiles.active}
       discovery:
         namespace: ${spring.profiles.active}
       username: nacos
@@ -25,3 +33,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+# API Documentation (OpenAPI / Swagger UI)
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html

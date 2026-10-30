@@ -2,12 +2,14 @@
 
 server:
   port: 0
+  # respect X-Forwarded-* headers sent by gateway (Swagger "Try it out" via gateway)
+  forward-headers-strategy: framework
 
 spring:
   application:
     name: order-service
   profiles:
-    active: prod
+    active: dev
   config:
     import:
       - nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
@@ -21,6 +23,11 @@ spring:
       username: nacos
       password: Hout$363636
       server-addr: localhost:8848
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8888/realms/ecommerce
 
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -34,3 +41,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+# API Documentation (OpenAPI / Swagger UI)
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
