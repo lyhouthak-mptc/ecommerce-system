@@ -1,0 +1,56 @@
+#change user service running port
+
+server:
+  port: 55053
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    name: user-service
+  profiles:
+    active: dev
+  config:
+    import:
+      - optional:nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
+  cloud:
+    nacos:
+      config:
+        file-extension: yaml
+        namespace: ${spring.profiles.active}
+      discovery:
+        namespace: ${spring.profiles.active}
+      username: nacos
+      password: Hout$363636
+      server-addr: localhost:8848
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8888/realms/ecommerce
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: ecommerce_usr
+    password: qwerqwer
+    url: jdbc:postgresql://localhost:8432/db_user
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+# Keycloak realm where users are created
+# (admin client connection is set in KeycloakAdminClientConfig)
+keycloak:
+  admin:
+    realm: ecommerce
+
+# API Documentation (OpenAPI / Swagger UI)
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html

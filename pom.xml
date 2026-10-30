@@ -20,6 +20,8 @@
         <module>payment-service</module>
         <module>business-service</module>
         <module>customer-service</module>
+        <module>gateway-service</module>
+        <module>user-service</module>
     </modules>
 
     <properties>
@@ -29,6 +31,7 @@
         <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
         <spring-cloud-alibaba.version>2025.1.0.0</spring-cloud-alibaba.version>
         <spring-cloud.version>2025.1.2</spring-cloud.version>
+        <springdoc.version>3.1.1</springdoc.version>
     </properties>
 
     <dependencyManagement>
@@ -123,6 +126,23 @@
                 <groupId>co.istad.haklyhout</groupId>
                 <artifactId>customer-service-restapi</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+
+            <!-- API Documentation (OpenAPI / Swagger UI) -->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webflux-scalar</artifactId>
+                <version>${springdoc.version}</version>
             </dependency>
 
             <!-- Spring Cloud -->

@@ -1,0 +1,105 @@
+#change gateway service running port
+
+server:
+  port: 8585
+
+spring:
+  application:
+    name: gateway-service
+  profiles:
+    active: dev
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  config:
+    import:
+      - optional:nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
+  cloud:
+    gateway:
+      server:
+        webflux:
+#          routes:
+#            - id: vuejs
+#              uri: http://[::1]:5173
+#              # catch-all for the frontend: run after the service routes
+#              order: 10000
+#              predicates:
+#                - Path=/**
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+          trusted-proxies: ".*"
+          default-filters:
+            - SaveSession
+            - TokenRelay=
+    nacos:
+      config:
+        file-extension: yaml
+        namespace: ${spring.profiles.active}
+      discovery:
+        namespace: ${spring.profiles.active}
+      username: nacos
+      password: Hout$363636
+      server-addr: localhost:8848
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8888/realms/ecommerce
+        registration:
+          ecommerce-postman:
+            provider: keycloak
+            client-id: ecommerce-postman
+            #client-secret: secret
+            scope:
+              - openid
+              - email
+              - profile
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8585/login/oauth2/code/ecommerce-postman
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: 'health,info,gateway'
+  endpoint:
+    gateway:
+      access: read_only
+
+# Scalar UI - aggregate docs of all services
+scalar:
+  sources:
+    - title: Order Service
+      url: /order-service/v3/api-docs
+    - title: Payment Service
+      url: /payment-service/v3/api-docs
+    - title: Business Service
+      url: /business-service/v3/api-docs
+    - title: Customer Service
+      url: /customer-service/v3/api-docs
+    - title: User Service
+      url: /user-service/v3/api-docs
+
+# API Documentation (OpenAPI / Swagger UI) - aggregate docs of all services
+# Each url goes through the discovery locator route: /{service-id}/v3/api-docs
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    urls:
+      - name: order-service
+        url: /order-service/v3/api-docs
+      - name: payment-service
+        url: /payment-service/v3/api-docs
+      - name: business-service
+        url: /business-service/v3/api-docs
+      - name: customer-service
+        url: /customer-service/v3/api-docs
+      - name: user-service
+        url: /user-service/v3/api-docs
