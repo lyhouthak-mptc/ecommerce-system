@@ -1,4 +1,8 @@
 package co.istad.lyhout.ecommerce.user.biz.service;
 
-public interface KeycloakAssignRoles {
+public interface KeycloakRoleService {
+
+    void assignRoles(String userId, String roleNameWithDelimiter);
+
 }
+
