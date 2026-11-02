@@ -45,8 +45,8 @@ public class Order extends AggregateRoot<OrderId> {
     }
 
     private void validateTotalPrice() {
-        if (orderStatus != null || super.getId() != null) {
-            throw new OrderDomainException("Order is not in correct status for initialization");
+        if (price == null || !price.isGreaterThanZero()) {
+            throw new OrderDomainException("Total price must be greater than zero");
         }
     }
 
@@ -66,7 +66,7 @@ public class Order extends AggregateRoot<OrderId> {
     private void initializeOrderItems() {
         int itemCount = 1;
         for (OrderItem item : items) {
-            item.initialzeOrderItem(super.getId(), new OrderItemId(itemCount++));
+            item.initializeOrderItem(super.getId(), new OrderItemId(itemCount++));
         }
     }
 

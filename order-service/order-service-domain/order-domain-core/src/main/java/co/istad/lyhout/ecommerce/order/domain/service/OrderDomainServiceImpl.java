@@ -2,6 +2,7 @@ package co.istad.lyhout.ecommerce.order.domain.service;
 
 import co.istad.lyhout.ecommerce.order.domain.entity.Business;
 import co.istad.lyhout.ecommerce.order.domain.entity.Order;
+import co.istad.lyhout.ecommerce.order.domain.entity.Product;
 import co.istad.lyhout.ecommerce.order.domain.event.OrderCancelledEvent;
 import co.istad.lyhout.ecommerce.order.domain.event.OrderCreatedEvent;
 import co.istad.lyhout.ecommerce.order.domain.event.OrderPaidEvent;
@@ -17,8 +18,19 @@ public class OrderDomainServiceImpl implements OrderDomainService{
     public OrderCreatedEvent validateAndInitiateOrder(Order order, Business business) {
 //      validate business
         if (!business.isActive()) {
-            throw new OrderDomainException("Business is not currenlty action");
+            throw new OrderDomainException("Business with ID: " + business.getId().value() + " is not currently active");
         }
+
+        // Use the business's confirmed product name and price, not the values sent by the client
+        order.getItems().forEach(orderItem -> {
+            Product currentProduct = orderItem.getProduct();
+            business.getProducts().stream()
+                    .filter(businessProduct -> businessProduct.equals(currentProduct))
+                    .findFirst()
+                    .ifPresent(businessProduct -> currentProduct.updateConfirmedNameAndPrice(
+                            businessProduct.getName(), businessProduct.getPrice()));
+        });
+
         order.validateOrder();
         order.initializeOrder();
 

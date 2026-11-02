@@ -54,7 +54,7 @@ public class OrderItem extends BaseEntity<OrderItemId> {
         return price.isGreaterThanZero() && price.equals(product.getPrice()) && price.multiply(quantity).equals(subTotal);
     }
 
-    public void initialzeOrderItem(OrderId id, OrderItemId orderItemId) {
+    public void initializeOrderItem(OrderId orderId, OrderItemId orderItemId) {
         this.orderId = orderId;
         super.setId(orderItemId);
     }
