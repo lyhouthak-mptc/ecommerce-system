@@ -14,6 +14,7 @@
     <modules>
         <module>payment-service-domain</module>
         <module>payment-service-persistence</module>
+        <module>payment-service-messaging</module>
         <module>payment-service-main</module>
     </modules>
 

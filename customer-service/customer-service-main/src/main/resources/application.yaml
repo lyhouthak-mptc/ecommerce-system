@@ -22,6 +22,12 @@ spring:
       username: nacos
       password: Hout$363636
       server-addr: localhost:8848
+    sentinel:
+      transport:
+        dashboard: localhost:8081
+        port: 8719
+      eager: true
+      web-context-unify: false
   datasource:
     driver-class-name: org.postgresql.Driver
     username: ecommerce_usr
@@ -43,3 +49,6 @@ springdoc:
   swagger-ui:
     enabled: true
     path: /swagger-ui.html
+feign:
+  sentinel:
+    enabled: true

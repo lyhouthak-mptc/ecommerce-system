@@ -1,5 +1,6 @@
 package co.istad.lyhout.ecommerce.customer.persistence.mapper;
 
+import co.istad.lyhout.ecommerce.customer.domain.dto.CustomerResult;
 import co.istad.lyhout.ecommerce.customer.persistence.entity.CustomerEntity;
 import co.istad.haklyhout.ecommerce.domain.valueobject.PhoneNumber;
 import co.istad.lyhout.ecommerce.customer.domain.entity.Customer;
@@ -24,4 +25,6 @@ public interface CustomerPersistenceMapper {
     default PhoneNumber toPhoneNumber(String phoneNumber) {
         return phoneNumber == null ? null : new PhoneNumber(phoneNumber);
     }
+
+    CustomerResult toCustomerResult(CustomerEntity customerEntity);
 }

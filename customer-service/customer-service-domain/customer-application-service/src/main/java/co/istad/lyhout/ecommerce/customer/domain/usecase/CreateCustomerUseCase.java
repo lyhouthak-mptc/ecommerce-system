@@ -1,13 +1,18 @@
 package co.istad.lyhout.ecommerce.customer.domain.usecase;
 
+import co.istad.lyhout.ecommerce.customer.client.dto.UserResponse;
+import co.istad.lyhout.ecommerce.customer.client.exception.UserServiceUnavailableException;
+import co.istad.lyhout.ecommerce.customer.client.feign.UserFeignClient;
 import co.istad.lyhout.ecommerce.customer.domain.dto.CreateCustomerCommand;
 import co.istad.lyhout.ecommerce.customer.domain.dto.CreateCustomerResult;
 import co.istad.lyhout.ecommerce.customer.domain.exception.CustomerAlreadyExistsException;
+import co.istad.lyhout.ecommerce.customer.domain.exception.CustomerDomainException;
 import co.istad.lyhout.ecommerce.customer.domain.mapper.CustomerDataMapper;
 import co.istad.lyhout.ecommerce.customer.domain.port.output.CustomerRepository;
 import co.istad.lyhout.ecommerce.customer.domain.entity.Customer;
 import co.istad.lyhout.ecommerce.customer.domain.event.CustomerCreatedEvent;
 import co.istad.lyhout.ecommerce.customer.domain.service.CustomerDomainService;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -24,10 +29,20 @@ public class CreateCustomerUseCase {
     private final CustomerDomainService customerDomainService; // business rules (from customer-domain-core)
     private final CustomerRepository customerRepository;
     private final CustomerDataMapper customerDataMapper;
+    private final UserFeignClient userFeignClient;
 
     @Transactional // everything below runs in one DB transaction: if anything fails, nothing is saved
     public CreateCustomerResult execute(CreateCustomerCommand createCustomerCommand) {
         log.info("Execute CreateCustomerUseCase : {}", createCustomerCommand);
+
+        // ACL
+        try {
+            UserResponse userResponse = userFeignClient.getUserById(createCustomerCommand.userId());
+        } catch (FeignException.NotFound e) {
+            throw new CustomerDomainException("user not found");
+        } catch (UserServiceUnavailableException e) {
+            throw new UserServiceUnavailableException(e.getMessage());
+        }
 
         if (customerRepository.existsByUsername(createCustomerCommand.username())) {
             throw new CustomerAlreadyExistsException("Username already exists");

@@ -2,10 +2,12 @@ package co.istad.lyhout.ecommerce.customer.restapi.mapper;
 
 import co.istad.lyhout.ecommerce.customer.domain.dto.CreateCustomerCommand;
 import co.istad.lyhout.ecommerce.customer.domain.dto.CreateCustomerResult;
+import co.istad.lyhout.ecommerce.customer.domain.dto.CustomerResult;
 import co.istad.lyhout.ecommerce.customer.domain.dto.UpdateCustomerCommand;
 import co.istad.lyhout.ecommerce.customer.domain.dto.UpdateCustomerResult;
 import co.istad.lyhout.ecommerce.customer.restapi.dto.CustomerCreateRequest;
 import co.istad.lyhout.ecommerce.customer.restapi.dto.CustomerCreateResponse;
+import co.istad.lyhout.ecommerce.customer.restapi.dto.CustomerResponse;
 import co.istad.lyhout.ecommerce.customer.restapi.dto.CustomerUpdateRequest;
 import co.istad.lyhout.ecommerce.customer.restapi.dto.CustomerUpdateResponse;
 import org.mapstruct.Mapper;
@@ -22,4 +24,6 @@ public interface CustomerWebMapper {
     @Mapping(source = "customerId", target = "customerId")
     UpdateCustomerCommand customerUpdateRequestToUpdateCustomerCommand(UUID customerId, CustomerUpdateRequest customerUpdateRequest);
     CustomerUpdateResponse updateCustomerResultToCustomerUpdateResponse(UpdateCustomerResult updateCustomerResult);
+
+    CustomerResponse customerResultToCustomerResponse(CustomerResult customerResult);
 }

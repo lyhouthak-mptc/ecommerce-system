@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public class Customer extends AggregateRoot<CustomerId> {
 
+    private final String userId;
     private final String username;
     private String familyName;
     private String givenName;
@@ -15,6 +16,10 @@ public class Customer extends AggregateRoot<CustomerId> {
     private PhoneNumber phoneNumber;
     private LoyaltyTier loyaltyTier;
     private CustomerStatus status;
+
+    public String getUserId() {
+        return userId;
+    }
 
     public String getUsername() {
         return username;
@@ -100,6 +105,7 @@ public class Customer extends AggregateRoot<CustomerId> {
 
     private Customer(Builder builder) {
         super.setId(builder.id);
+        userId = builder.userId;
         username = builder.username;
         familyName = builder.familyName;
         givenName = builder.givenName;
@@ -115,6 +121,7 @@ public class Customer extends AggregateRoot<CustomerId> {
 
     public static final class Builder {
         private CustomerId id;
+        private String userId;
         private String username;
         private String familyName;
         private String givenName;
@@ -128,6 +135,11 @@ public class Customer extends AggregateRoot<CustomerId> {
 
         public Builder id(CustomerId val) {
             id = val;
+            return this;
+        }
+
+        public Builder userId(String val) {
+            userId = val;
             return this;
         }
 

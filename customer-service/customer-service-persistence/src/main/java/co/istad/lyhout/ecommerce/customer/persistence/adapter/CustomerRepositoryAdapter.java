@@ -1,12 +1,18 @@
 package co.istad.lyhout.ecommerce.customer.persistence.adapter;
 
+import co.istad.lyhout.ecommerce.core.PageResponse;
+import co.istad.lyhout.ecommerce.customer.domain.dto.CustomerResult;
 import co.istad.lyhout.ecommerce.customer.domain.port.output.CustomerRepository;
 import co.istad.lyhout.ecommerce.customer.persistence.entity.CustomerEntity;
 import co.istad.lyhout.ecommerce.customer.persistence.mapper.CustomerPersistenceMapper;
 import co.istad.lyhout.ecommerce.customer.persistence.repository.CustomerJpaRepository;
 import co.istad.haklyhout.ecommerce.domain.valueobject.CustomerId;
 import co.istad.lyhout.ecommerce.customer.domain.entity.Customer;
+import feign.Feign;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -18,6 +24,23 @@ public class CustomerRepositoryAdapter implements CustomerRepository {
     private final CustomerPersistenceMapper customerPersistenceMapper;
 
     @Override
+    public PageResponse<CustomerResult> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CustomerEntity> customerEntityPage = customerJpaRepository.findAll(pageable);
+        Page<CustomerResult> customerResultPage = customerEntityPage.map(customerPersistenceMapper::toCustomerResult);
+        return PageResponse.<CustomerResult>builder()
+                .items(customerResultPage.getContent())
+                .page(customerResultPage.getNumber())
+                .size(customerResultPage.getSize())
+                .totalPages(customerResultPage.getTotalPages())
+                .totalElements(customerResultPage.getTotalElements())
+                .hasNext(customerResultPage.hasNext())
+                .build();
+    }
+
+
+
+    @Override
     public Customer save(Customer customer) {
         CustomerEntity savedEntity = customerJpaRepository.save(
                 customerPersistenceMapper.customerToCustomerEntity(customer));
@@ -27,6 +50,12 @@ public class CustomerRepositoryAdapter implements CustomerRepository {
     @Override
     public Optional<Customer> findById(CustomerId customerId) {
         return customerJpaRepository.findById(customerId.value())
+                .map(customerPersistenceMapper::customerEntityToCustomer);
+    }
+
+    @Override
+    public Optional<Customer> findCustomerByUserId(String userId) {
+        return customerJpaRepository.findByUserId(userId)
                 .map(customerPersistenceMapper::customerEntityToCustomer);
     }
 

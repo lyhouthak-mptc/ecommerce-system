@@ -22,6 +22,7 @@
         <module>customer-service</module>
         <module>gateway-service</module>
         <module>user-service</module>
+        <module>common/common-core</module>
     </modules>
 
     <properties>
@@ -54,6 +55,11 @@
             <dependency>
                 <groupId>co.istad.haklyhout</groupId>
                 <artifactId>common-persistence</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>co.istad.haklyhout</groupId>
+                <artifactId>common-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -125,6 +131,12 @@
             <dependency>
                 <groupId>co.istad.haklyhout</groupId>
                 <artifactId>customer-service-restapi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>co.istad.haklyhout</groupId>
+                <artifactId>customer-service-client</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
