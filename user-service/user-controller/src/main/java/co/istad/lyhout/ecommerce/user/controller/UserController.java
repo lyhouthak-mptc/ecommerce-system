@@ -4,6 +4,7 @@ import co.istad.lyhout.ecommerce.user.biz.service.UserService;
 import co.istad.lyhout.ecommerce.user.dto.UserCreateRequest;
 import co.istad.lyhout.ecommerce.user.dto.UserResponse;
 import co.istad.lyhout.ecommerce.user.dto.UserUpdateRequest;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,9 +25,23 @@ public class UserController {
         return userService.create(userCreateRequest);
     }
 
+    @SentinelResource(
+            value = "getUsers",
+            fallback = "getUsersFallback"
+    )
     @GetMapping
     public List<UserResponse> getUsers() {
+        // Slow on purpose to test the Sentinel circuit breaker
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return userService.getUsers();
+    }
+
+    public List<UserResponse> getUsersFallback(Throwable t) {
+        return List.of();
     }
 
     @GetMapping("/roles/{roleName}")
