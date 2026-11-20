@@ -1,7 +1,7 @@
 package co.istad.lyhout.ecommerce.order.persistence.adapter;
 
 import co.istad.lyhout.ecommerce.order.domain.entity.Business;
-import co.istad.lyhout.ecommerce.order.domain.port.output.BusinessRepository;
+import co.istad.lyhout.ecommerce.order.domain.port.ouput.BusinessRepository;
 import co.istad.lyhout.ecommerce.order.persistence.entity.BusinessEntity;
 import co.istad.lyhout.ecommerce.order.persistence.mapper.BusinessPersistenceMapper;
 import co.istad.lyhout.ecommerce.order.persistence.repository.BusinessJpaRepository;

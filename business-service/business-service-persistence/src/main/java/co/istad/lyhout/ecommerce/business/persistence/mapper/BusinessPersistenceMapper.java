@@ -4,10 +4,10 @@ import co.istad.lyhout.ecommerce.business.domain.entity.Business;
 import co.istad.lyhout.ecommerce.business.domain.entity.OrderDetail;
 import co.istad.lyhout.ecommerce.business.domain.entity.Product;
 import co.istad.lyhout.ecommerce.business.persistence.entity.BusinessEntity;
-import co.istad.lyhout.ecommerce.persistence.exception.BusinessPersistenceException;
 import co.istad.haklyhout.ecommerce.domain.valueobject.BusinessId;
 import co.istad.haklyhout.ecommerce.domain.valueobject.Money;
 import co.istad.haklyhout.ecommerce.domain.valueobject.ProductId;
+import co.istad.lyhout.ecommerce.persistence.business.exception.BusinessPersistenceException;
 import org.mapstruct.Mapper;
 
 import java.util.List;

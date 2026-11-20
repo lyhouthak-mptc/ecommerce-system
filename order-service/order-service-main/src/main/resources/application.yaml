@@ -1,8 +1,6 @@
-#change order srvice running port
-
+# Change order service running port
 server:
-  port: 0
-  # respect X-Forwarded-* headers sent by gateway (Swagger "Try it out" via gateway)
+  port: 8550
   forward-headers-strategy: framework
 
 spring:
@@ -21,8 +19,8 @@ spring:
       discovery:
         namespace: ${spring.profiles.active}
       username: nacos
-      password: Hout$363636
-      server-addr: localhost:8848
+      password: qwer
+      server-addr: 127.0.0.1:8848
   security:
     oauth2:
       resourceserver:
@@ -41,12 +39,3 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
-# API Documentation (OpenAPI / Swagger UI)
-springdoc:
-  api-docs:
-    enabled: true
-    path: /v3/api-docs
-  swagger-ui:
-    enabled: true
-    path: /swagger-ui.html

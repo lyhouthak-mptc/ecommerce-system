@@ -8,5 +8,4 @@ public record StreetAddress(
         String postalCode,
         String city
 ) {
-
 }

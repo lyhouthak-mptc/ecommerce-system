@@ -1,16 +1,17 @@
 package co.istad.lyhout.ecommerce.customer.domain.usecase;
 
+import co.istad.lyhout.ecommerce.customer.domain.dto.CustomerResult;
 import co.istad.lyhout.ecommerce.customer.domain.dto.UpdateCustomerCommand;
 import co.istad.lyhout.ecommerce.customer.domain.dto.UpdateCustomerResult;
-import co.istad.lyhout.ecommerce.customer.domain.exception.CustomerAlreadyExistsException;
-import co.istad.lyhout.ecommerce.customer.domain.exception.CustomerNotFoundException;
-import co.istad.lyhout.ecommerce.customer.domain.mapper.CustomerDataMapper;
-import co.istad.lyhout.ecommerce.customer.domain.port.output.CustomerRepository;
-import co.istad.haklyhout.ecommerce.domain.valueobject.CustomerId;
-import co.istad.haklyhout.ecommerce.domain.valueobject.Email;
 import co.istad.lyhout.ecommerce.customer.domain.entity.Customer;
 import co.istad.lyhout.ecommerce.customer.domain.event.CustomerUpdatedEvent;
+import co.istad.lyhout.ecommerce.customer.domain.exception.CustomerDomainException;
+import co.istad.lyhout.ecommerce.customer.domain.mapper.CustomerDomainMapper;
+import co.istad.lyhout.ecommerce.customer.domain.port.output.CustomerRepository;
 import co.istad.lyhout.ecommerce.customer.domain.service.CustomerDomainService;
+import co.istad.haklyhout.ecommerce.domain.valueobject.CustomerId;
+import co.istad.haklyhout.ecommerce.domain.valueobject.Email;
+import co.istad.haklyhout.ecommerce.domain.valueobject.PhoneNumber;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -26,30 +27,33 @@ public class UpdateCustomerUseCase {
 
     private final CustomerDomainService customerDomainService;
     private final CustomerRepository customerRepository;
-    private final CustomerDataMapper customerDataMapper;
+    private final CustomerDomainMapper customerDomainMapper;
 
     @Transactional
     public UpdateCustomerResult execute(UpdateCustomerCommand updateCustomerCommand) {
-        log.info("Execute UpdateCustomerUseCase : {}", updateCustomerCommand);
 
         Customer customer = customerRepository.findById(new CustomerId(updateCustomerCommand.customerId()))
-                .orElseThrow(() -> new CustomerNotFoundException(
+                .orElseThrow(() -> new CustomerDomainException(
                         "Customer not found: " + updateCustomerCommand.customerId()));
 
         Email newEmail = new Email(updateCustomerCommand.email());
+
         if (!newEmail.equals(customer.getEmail()) && customerRepository.existsByEmail(newEmail.value())) {
-            throw new CustomerAlreadyExistsException("Email already exists");
+            throw new CustomerDomainException("Email already exists");
         }
 
-        CustomerUpdatedEvent customerUpdatedEvent = customerDomainService.updateCustomer(customer,
+        customer.updateCustomer(
                 updateCustomerCommand.familyName(),
                 updateCustomerCommand.givenName(),
                 newEmail,
-                customerDataMapper.toPhoneNumber(updateCustomerCommand.phoneNumber()));
-        Customer savedCustomer = customerRepository.save(customer);
+                new PhoneNumber(updateCustomerCommand.phoneNumber())
+        );
+
+        CustomerUpdatedEvent customerUpdatedEvent = customerDomainService.updateCustomer(customer);
+        CustomerResult savedCustomer = customerRepository.save(customer);
 
         log.info("Customer updated with id: {} at {}",
-                savedCustomer.getId().value(), customerUpdatedEvent.getUpdatedAt());
-        return new UpdateCustomerResult(savedCustomer.getId().value());
+                savedCustomer.id(), customerUpdatedEvent.getUpdatedAt());
+        return new UpdateCustomerResult(savedCustomer.id());
     }
 }

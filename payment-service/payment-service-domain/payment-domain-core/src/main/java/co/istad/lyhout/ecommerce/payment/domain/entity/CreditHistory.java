@@ -1,10 +1,10 @@
 package co.istad.lyhout.ecommerce.payment.domain.entity;
 
 import co.istad.haklyhout.ecommerce.domain.entity.BaseEntity;
-import co.istad.haklyhout.ecommerce.domain.valueobject.CreditHistoryId;
 import co.istad.haklyhout.ecommerce.domain.valueobject.CustomerId;
 import co.istad.haklyhout.ecommerce.domain.valueobject.Money;
-import co.istad.haklyhout.ecommerce.domain.valueobject.TransactionType;
+import co.istad.lyhout.ecommerce.payment.domain.valueobject.CreditHistoryId;
+import co.istad.lyhout.ecommerce.payment.domain.valueobject.TransactionType;
 
 public class CreditHistory extends BaseEntity<CreditHistoryId> {
 
@@ -13,7 +13,7 @@ public class CreditHistory extends BaseEntity<CreditHistoryId> {
     private final TransactionType transactionType;
 
     private CreditHistory(Builder builder) {
-        super.setId(builder.id);
+        setId(builder.creditHistoryId);
         customerId = builder.customerId;
         amount = builder.amount;
         transactionType = builder.transactionType;
@@ -22,6 +22,7 @@ public class CreditHistory extends BaseEntity<CreditHistoryId> {
     public static Builder builder() {
         return new Builder();
     }
+
 
     public CustomerId getCustomerId() {
         return customerId;
@@ -36,7 +37,7 @@ public class CreditHistory extends BaseEntity<CreditHistoryId> {
     }
 
     public static final class Builder {
-        private CreditHistoryId id;
+        private CreditHistoryId creditHistoryId;
         private CustomerId customerId;
         private Money amount;
         private TransactionType transactionType;
@@ -44,9 +45,8 @@ public class CreditHistory extends BaseEntity<CreditHistoryId> {
         private Builder() {
         }
 
-
-        public Builder id(CreditHistoryId val) {
-            id = val;
+        public Builder creditHistoryId(CreditHistoryId val) {
+            creditHistoryId = val;
             return this;
         }
 

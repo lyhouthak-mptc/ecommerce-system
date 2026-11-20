@@ -1,8 +1,8 @@
 package co.istad.lyhout.ecommerce.customer.domain.event;
 
+import co.istad.lyhout.ecommerce.customer.domain.entity.Customer;
 import co.istad.haklyhout.ecommerce.domain.event.DomainEvent;
 import co.istad.haklyhout.ecommerce.domain.valueobject.CustomerId;
-import co.istad.lyhout.ecommerce.customer.domain.entity.Customer;
 
 import java.time.ZonedDateTime;
 

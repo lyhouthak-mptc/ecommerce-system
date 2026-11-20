@@ -1,6 +1,5 @@
 package co.istad.lyhout.ecommerce.order.persistence.entity;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
@@ -16,18 +15,17 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @IdClass(BusinessIdEntity.class)
-
 @Entity
 @Table(name = "businesses")
 public class BusinessEntity {
-
     @Id
     private UUID businessId;
 
     @Id
     private UUID productId;
 
-    private Boolean active;
+    private Boolean businessActive;
+
     private String productName;
     private BigDecimal productPrice;
 

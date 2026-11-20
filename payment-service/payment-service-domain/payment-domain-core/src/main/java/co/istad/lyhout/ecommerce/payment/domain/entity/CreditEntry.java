@@ -1,15 +1,33 @@
 package co.istad.lyhout.ecommerce.payment.domain.entity;
 
 import co.istad.haklyhout.ecommerce.domain.entity.BaseEntity;
-import co.istad.haklyhout.ecommerce.domain.valueobject.CreditEntryId;
 import co.istad.haklyhout.ecommerce.domain.valueobject.CustomerId;
 import co.istad.haklyhout.ecommerce.domain.valueobject.Money;
-import co.istad.lyhout.ecommerce.payment.domain.exception.PaymentDomainException;
+import co.istad.lyhout.ecommerce.payment.domain.valueobject.CreditEntryId;
 
 public class CreditEntry extends BaseEntity<CreditEntryId> {
 
     private final CustomerId customerId;
     private Money totalCreditAmount;
+
+    public void addCreditAmount(Money amount) {
+        totalCreditAmount = totalCreditAmount.add(amount);
+    }
+
+    public void subtractCreditAmount(Money amount) {
+        totalCreditAmount = totalCreditAmount.subtract(amount);
+    }
+
+    private CreditEntry(Builder builder) {
+        setId(builder.creditEntryId);
+        customerId = builder.customerId;
+        totalCreditAmount = builder.totalCreditAmount;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
 
     public CustomerId getCustomerId() {
         return customerId;
@@ -19,49 +37,16 @@ public class CreditEntry extends BaseEntity<CreditEntryId> {
         return totalCreditAmount;
     }
 
-    // បន្ថែមលុយចូល credit
-    public void addCreditAmount(Money amount) {
-        if (amount == null || !amount.isGreaterThanZero()) {
-            throw new PaymentDomainException("Credit amount to add must be greater than zero");
-        }
-        totalCreditAmount = totalCreditAmount.add(amount);
-    }
-
-    // ដកលុយចេញពី credit
-    public void subtractCreditAmount(Money amount) {
-        if (amount == null || !amount.isGreaterThanZero()) {
-            throw new PaymentDomainException("Credit amount to subtract must be greater than zero");
-        }
-        // credit មិនគ្រប់ → មិនអនុញ្ញាតឱ្យដក
-        if (amount.isGreaterThan(totalCreditAmount)) {
-            throw new PaymentDomainException("Customer does not have enough credit. Credit: "
-                    + totalCreditAmount.getAmount() + ", price: " + amount.getAmount());
-        }
-        totalCreditAmount = totalCreditAmount.subtract(amount);
-    }
-
-    private CreditEntry(Builder builder) {
-        super.setId(builder.id);
-        customerId = builder.customerId;
-        totalCreditAmount = builder.totalCreditAmount;
-    }
-
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
     public static final class Builder {
-        private CreditEntryId id;
+        private CreditEntryId creditEntryId;
         private CustomerId customerId;
         private Money totalCreditAmount;
 
         private Builder() {
         }
 
-
-        public Builder id(CreditEntryId val) {
-            id = val;
+        public Builder creditEntryId(CreditEntryId val) {
+            creditEntryId = val;
             return this;
         }
 

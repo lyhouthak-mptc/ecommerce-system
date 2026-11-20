@@ -11,4 +11,5 @@ public interface CustomerPersistenceMapper {
     @Mapping(source = "id", target = "id.value")
     Customer customerEntityToCustomer(CustomerEntity customerEntity);
 
+
 }

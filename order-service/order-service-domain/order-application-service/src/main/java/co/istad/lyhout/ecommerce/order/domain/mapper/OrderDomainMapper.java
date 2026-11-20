@@ -19,4 +19,5 @@ public interface OrderDomainMapper {
     @Mapping(source = "price", target = "price.amount")
     @Mapping(source = "subTotal", target = "subTotal.amount")
     OrderItem commandOrderItemToOrderItem(CommandOrderItem commandOrderItem);
+
 }

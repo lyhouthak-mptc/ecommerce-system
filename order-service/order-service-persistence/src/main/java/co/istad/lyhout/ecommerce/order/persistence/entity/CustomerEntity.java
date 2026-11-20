@@ -12,14 +12,11 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-
 @Entity
 @Table(name = "customers")
 public class CustomerEntity {
-
     @Id
     private UUID id;
-
     private String username;
     private String familyName;
     private String givenName;

@@ -6,14 +6,36 @@ import co.istad.haklyhout.ecommerce.domain.valueobject.OrderId;
 import co.istad.haklyhout.ecommerce.domain.valueobject.OrderItemId;
 
 public class OrderItem extends BaseEntity<OrderItemId> {
-    private OrderItem(Builder builder) {
-        super.setId(builder.id);
-        orderId = builder.orderId;
-        product = builder.product;
-        quantity = builder.quantity;
-        price = builder.price;
-        subTotal = builder.subTotal;
+    private OrderId orderId;
+
+    private final Product product;
+
+    private final Integer quantity;
+
+    private final Money price;
+
+    private final Money subTotal;
+
+
+    // ============ Critical Business Logic ============ //
+    // តើតម្លៃត្រឹមត្រូវដែរឬទេ?
+    boolean isPriceValid() {
+        boolean isGreaterThanZero = price.isGreaterThanZero();
+        boolean isPriceConfirmed = price.equals(product.getPrice());
+        boolean isSubTotalConfirmed = price.multiply(quantity).equals(subTotal);
+        return isGreaterThanZero && isPriceConfirmed && isSubTotalConfirmed;
     }
+
+    public void initializeOrderItem(OrderId orderId, OrderItemId orderItemId) {
+        this.orderId = orderId;
+        super.setId(orderItemId);
+    }
+
+
+
+
+
+
 
     public OrderId getOrderId() {
         return orderId;
@@ -35,33 +57,21 @@ public class OrderItem extends BaseEntity<OrderItemId> {
         return subTotal;
     }
 
-    private OrderId orderId;
-    private final Product product;
-    private final Integer quantity;
-    private final Money price;
-    private final Money subTotal;
-
-    public OrderItem(OrderId orderId, Product product, Integer quantity, Money price, Money subTotal) {
-        this.orderId = orderId;
-        this.product = product;
-        this.quantity = quantity;
-        this.price = price;
-        this.subTotal = subTotal;
-    }
-
-//  CHECK VALUE OF PRICE IS VALID
-    public boolean isPriceValid() {
-        return price.isGreaterThanZero() && price.equals(product.getPrice()) && price.multiply(quantity).equals(subTotal);
-    }
-
-    public void initializeOrderItem(OrderId orderId, OrderItemId orderItemId) {
-        this.orderId = orderId;
-        super.setId(orderItemId);
+    private OrderItem(Builder builder) {
+        super.setId(builder.id);
+        orderId = builder.orderId;
+        product = builder.product;
+        quantity = builder.quantity;
+        price = builder.price;
+        subTotal = builder.subTotal;
     }
 
     public static Builder builder() {
         return new Builder();
     }
+
+
+
 
     public static final class Builder {
         private OrderItemId id;

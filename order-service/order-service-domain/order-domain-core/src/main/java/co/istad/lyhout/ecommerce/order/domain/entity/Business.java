@@ -9,23 +9,24 @@ public class Business extends AggregateRoot<BusinessId> {
     private final List<Product> products;
     private final boolean active;
 
-    private Business(Builder builder) {
-        super.setId(builder.id);
-        products = builder.products;
-        active = builder.active;
+    public List<Product> getProducts() {
+        return products;
     }
 
     public boolean isActive() {
         return active;
     }
 
-    public List<Product> getProducts() {
-        return products;
+    private Business(Builder builder) {
+        super.setId(builder.id);
+        products = builder.products;
+        active = builder.active;
     }
 
     public static Builder builder() {
         return new Builder();
     }
+
 
     public static final class Builder {
         private BusinessId id;

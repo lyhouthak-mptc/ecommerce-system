@@ -10,16 +10,14 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
-// JPA entiy mus be POJO (Plain Old Java Object) class
+// JPA Entity must be POJO (Plain Old Java Object) class
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
+@Entity // Create table name = order
 @Table(name = "orders")
 public class OrderEntity {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     private UUID customerId;
@@ -31,15 +29,14 @@ public class OrderEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItemEntity> items;
 
-
     @OneToOne(cascade = CascadeType.ALL)
     private OrderAddressEntity orderAddress;
-
 
     private UUID trackingId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    private String failureMessages; // message1; message2
+    private String failureMessages; // message1;message2
+
 }

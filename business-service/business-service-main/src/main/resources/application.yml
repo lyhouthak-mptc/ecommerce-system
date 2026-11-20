@@ -1,7 +1,5 @@
 server:
-  port: 0
-  # respect X-Forwarded-* headers sent by gateway (Swagger "Try it out" via gateway)
-  forward-headers-strategy: framework
+  port: 8552
 
 spring:
   application:
@@ -10,7 +8,7 @@ spring:
     active: dev
   config:
     import:
-      - optional:nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
+      - nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
   cloud:
     nacos:
       config:
@@ -19,8 +17,8 @@ spring:
       discovery:
         namespace: ${spring.profiles.active}
       username: nacos
-      password: Hout$363636
-      server-addr: localhost:8848
+      password: qwer
+      server-addr: 127.0.0.1:8848
   datasource:
     driver-class-name: org.postgresql.Driver
     username: ecommerce_usr
@@ -28,17 +26,8 @@ spring:
     url: jdbc:postgresql://localhost:8432/db_business
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         format_sql: true
-
-# API Documentation (OpenAPI / Swagger UI)
-springdoc:
-  api-docs:
-    enabled: true
-    path: /v3/api-docs
-  swagger-ui:
-    enabled: true
-    path: /swagger-ui.html

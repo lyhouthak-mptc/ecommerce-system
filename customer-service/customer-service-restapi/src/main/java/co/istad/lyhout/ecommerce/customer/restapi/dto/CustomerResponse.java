@@ -8,4 +8,5 @@ public record CustomerResponse(
         String givenName,
         String email,
         String phoneNumber
-) {}
+) {
+}

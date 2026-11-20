@@ -21,8 +21,8 @@ public interface OrderPersistenceMapper {
     @Mapping(source = "businessId.value", target = "businessId")
     @Mapping(source = "price.amount", target = "price")
     @Mapping(source = "trackingId.value", target = "trackingId")
-    @Mapping(source = "failureMessages", target = "failureMessages", qualifiedByName = "mapFailureMessages")
     @Mapping(source = "deliveryAddress", target = "orderAddress")
+    @Mapping(source = "failureMessages", target = "failureMessages", qualifiedByName = "mapFailureMessages")
     OrderEntity orderToOrderEntity(Order order);
 
     @Mapping(target = "id", expression = "java(UUID.randomUUID())")
@@ -30,8 +30,7 @@ public interface OrderPersistenceMapper {
 
     @Named("mapFailureMessages")
     default String mapFailureMessages(List<String> failureMessages) {
-        // A freshly created order has no failure messages yet
-        return failureMessages == null ? null : String.join(",", failureMessages);
+        return failureMessages == null ? "" : String.join(",", failureMessages);
     }
 
 
@@ -48,12 +47,7 @@ public interface OrderPersistenceMapper {
     @Mapping(target = "price.amount", source = "price")
     @Mapping(target = "trackingId.value", source = "trackingId")
     @Mapping(target = "failureMessages", source = "failureMessages", qualifiedByName = "mapFailureMessagesToList")
-    @Mapping(target = "deliveryAddress", source = "orderAddress")
     Order orderEntityToOrder(OrderEntity orderEntity);
-
-    // Map OrderAddressEntity to StreetAddress
-    @Mapping(target = "street", source = "streetName")
-    StreetAddress orderAddressEntityToStreetAddress(OrderAddressEntity orderAddressEntity);
 
     // Issue Map List<OrderItemEntity> to List<OrderItem>
     @Mapping(target = "id.value", source = "id")
@@ -64,7 +58,7 @@ public interface OrderPersistenceMapper {
 
     @Named("mapFailureMessagesToList")
     default List<String> mapFailureMessagesToList(String failureMessages) {
-        return failureMessages == null ? null : Arrays.stream(failureMessages.split(",")).toList();
+        return failureMessages == null ? List.of("") : Arrays.stream(failureMessages.split(",")).toList();
     }
 
 }

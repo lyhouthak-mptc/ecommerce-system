@@ -20,4 +20,6 @@ public class GatewayRouteConfig {
                         .uri("http://[::1]:5173"))
                 .build();
     }
+
+
 }

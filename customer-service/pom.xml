@@ -6,18 +6,18 @@
     <parent>
         <groupId>co.istad.haklyhout</groupId>
         <artifactId>ecommerce-system</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>customer-service</artifactId>
     <packaging>pom</packaging>
-
     <modules>
         <module>customer-service-domain</module>
-        <module>customer-service-persistence</module>
-        <module>customer-service-restapi</module>
         <module>customer-service-main</module>
+        <module>customer-service-restapi</module>
+        <module>customer-service-persistence</module>
         <module>customer-service-messaging</module>
         <module>customer-service-client</module>
     </modules>
+
 </project>

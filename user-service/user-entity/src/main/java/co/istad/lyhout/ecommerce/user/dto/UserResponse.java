@@ -7,8 +7,6 @@ import java.util.Date;
 @Builder
 public record UserResponse(
         String id,
-        String username,
-        String email,
         String familyName,
         String givenName,
         String gender,

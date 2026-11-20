@@ -5,6 +5,9 @@ import co.istad.haklyhout.ecommerce.domain.valueobject.Money;
 import co.istad.haklyhout.ecommerce.domain.valueobject.ProductId;
 
 public class Product extends BaseEntity<ProductId> {
+    private String name;
+    private Money price;
+
     public String getName() {
         return name;
     }
@@ -13,29 +16,21 @@ public class Product extends BaseEntity<ProductId> {
         return price;
     }
 
-    private String name;
-    private Money price;
-
-    public Product(ProductId productId, String name, Money price) {
-        super.setId(productId);
+    public void updateConfirmedNameAndPrice(String name, Money price) {
         this.name = name;
         this.price = price;
     }
 
-    public void updateConfirmedNameAndPrice(String name, Money price) {
-        this.name = name;
-        this.price = price;
+    private Product(Builder builder) {
+        super.setId(builder.id);
+        name = builder.name;
+        price = builder.price;
     }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    private Product(Builder builder) {
-        super.setId(builder.id);
-        name =  builder.name;
-        price = builder.price;
-    }
 
     public static final class Builder {
         private ProductId id;

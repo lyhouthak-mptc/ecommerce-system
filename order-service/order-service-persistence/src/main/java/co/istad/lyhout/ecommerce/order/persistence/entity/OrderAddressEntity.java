@@ -15,11 +15,10 @@ import java.util.UUID;
 public class OrderAddressEntity {
     @Id
     private UUID id;
-    private String streetName;
+    private String street;
     private String postalCode;
     private String city;
 
     @OneToOne(mappedBy = "orderAddress")
     private OrderEntity order;
-
 }

@@ -16,8 +16,6 @@ public class SecurityConfiguration {
         // 1. Endpoints (secured, policy, permit)
         http.authorizeHttpRequests(endpoint -> endpoint
                 .requestMatchers("/nacos/config").permitAll()
-                // keep API docs public so the gateway can aggregate them
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .anyRequest().authenticated()
         );
 

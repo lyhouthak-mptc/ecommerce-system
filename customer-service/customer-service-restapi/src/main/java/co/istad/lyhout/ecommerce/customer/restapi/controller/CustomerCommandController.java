@@ -1,13 +1,10 @@
 package co.istad.lyhout.ecommerce.customer.restapi.controller;
 
 
-import co.istad.lyhout.ecommerce.customer.domain.dto.CreateCustomerCommand;
-import co.istad.lyhout.ecommerce.customer.domain.dto.CreateCustomerResult;
-import co.istad.lyhout.ecommerce.customer.domain.dto.DeactivateCustomerCommand;
-import co.istad.lyhout.ecommerce.customer.domain.dto.UpdateCustomerCommand;
-import co.istad.lyhout.ecommerce.customer.domain.dto.UpdateCustomerResult;
+import co.istad.lyhout.ecommerce.customer.domain.dto.*;
 import co.istad.lyhout.ecommerce.customer.domain.usecase.CreateCustomerUseCase;
 import co.istad.lyhout.ecommerce.customer.domain.usecase.DeactivateCustomerUseCase;
+import co.istad.lyhout.ecommerce.customer.domain.usecase.DeleteCustomerUseCase;
 import co.istad.lyhout.ecommerce.customer.domain.usecase.UpdateCustomerUseCase;
 import co.istad.lyhout.ecommerce.customer.restapi.dto.CustomerCreateRequest;
 import co.istad.lyhout.ecommerce.customer.restapi.dto.CustomerCreateResponse;
@@ -22,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/customers")
+@RequestMapping("/api/customers")
 @RequiredArgsConstructor
 public class CustomerCommandController {
 
@@ -30,6 +27,7 @@ public class CustomerCommandController {
     private final CreateCustomerUseCase createCustomerUseCase;
     private final UpdateCustomerUseCase updateCustomerUseCase;
     private final DeactivateCustomerUseCase deactivateCustomerUseCase;
+    private final DeleteCustomerUseCase deleteCustomerUseCase;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -53,4 +51,10 @@ public class CustomerCommandController {
         deactivateCustomerUseCase.execute(new DeactivateCustomerCommand(customerId));
     }
 
+
+    @DeleteMapping("/{customerId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCustomerById(@PathVariable UUID customerId){
+        deleteCustomerUseCase.execute(new DeleteCustomerCommand(customerId));
+    }
 }

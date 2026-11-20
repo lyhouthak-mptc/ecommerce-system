@@ -1,6 +1,5 @@
 package co.istad.lyhout.ecommerce.order.domain.dto;
 
-
 import java.math.BigDecimal;
 import java.util.UUID;
 

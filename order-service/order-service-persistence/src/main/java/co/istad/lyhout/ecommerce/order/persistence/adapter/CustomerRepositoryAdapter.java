@@ -1,7 +1,7 @@
 package co.istad.lyhout.ecommerce.order.persistence.adapter;
 
 import co.istad.lyhout.ecommerce.order.domain.entity.Customer;
-import co.istad.lyhout.ecommerce.order.domain.port.output.CustomerRepository;
+import co.istad.lyhout.ecommerce.order.domain.port.ouput.CustomerRepository;
 import co.istad.lyhout.ecommerce.order.persistence.mapper.CustomerPersistenceMapper;
 import co.istad.lyhout.ecommerce.order.persistence.mapper.OrderPersistenceMapper;
 import co.istad.lyhout.ecommerce.order.persistence.repository.CustomerJpaRepository;
@@ -14,11 +14,14 @@ import java.util.UUID;
 @Repository
 @RequiredArgsConstructor
 public class CustomerRepositoryAdapter implements CustomerRepository {
+
     private final CustomerJpaRepository customerJpaRepository;
     private final CustomerPersistenceMapper customerPersistenceMapper;
+
     @Override
     public Optional<Customer> findCustomer(UUID customerId) {
         return customerJpaRepository.findById(customerId)
                 .map(customerPersistenceMapper::customerEntityToCustomer);
     }
+
 }

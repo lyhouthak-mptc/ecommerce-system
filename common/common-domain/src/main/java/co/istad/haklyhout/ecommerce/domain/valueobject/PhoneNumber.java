@@ -1,6 +1,4 @@
 package co.istad.haklyhout.ecommerce.domain.valueobject;
 
-public record PhoneNumber(
-        String number
-) {
+public record PhoneNumber(String value) {
 }

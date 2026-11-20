@@ -4,7 +4,7 @@ import co.istad.lyhout.ecommerce.customer.domain.entity.Customer;
 
 import java.time.ZonedDateTime;
 
-public class CustomerCreatedEvent extends CustomerEvent{
+public class CustomerCreatedEvent extends CustomerEvent {
     private final ZonedDateTime createdAt;
 
     public CustomerCreatedEvent(Customer customer, ZonedDateTime createdAt){

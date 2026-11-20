@@ -6,15 +6,20 @@
     <parent>
         <groupId>co.istad.haklyhout</groupId>
         <artifactId>user-service</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>user-entity</artifactId>
 
+    <properties>
+
+    </properties>
+
     <dependencies>
+
         <dependency>
             <groupId>co.istad.haklyhout</groupId>
-            <artifactId>common-domain</artifactId>
+            <artifactId>common-core</artifactId>
         </dependency>
 
         <dependency>
@@ -23,19 +28,14 @@
         </dependency>
 
         <dependency>
-            <groupId>co.istad.haklyhout</groupId>
-            <artifactId>common-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa-test</artifactId>
-            <scope>test</scope>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
 

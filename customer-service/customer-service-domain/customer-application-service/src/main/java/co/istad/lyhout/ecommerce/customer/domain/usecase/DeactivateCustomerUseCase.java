@@ -1,12 +1,13 @@
 package co.istad.lyhout.ecommerce.customer.domain.usecase;
 
+
 import co.istad.lyhout.ecommerce.customer.domain.dto.DeactivateCustomerCommand;
-import co.istad.lyhout.ecommerce.customer.domain.exception.CustomerNotFoundException;
-import co.istad.lyhout.ecommerce.customer.domain.port.output.CustomerRepository;
-import co.istad.haklyhout.ecommerce.domain.valueobject.CustomerId;
 import co.istad.lyhout.ecommerce.customer.domain.entity.Customer;
 import co.istad.lyhout.ecommerce.customer.domain.event.CustomerDeactivatedEvent;
+import co.istad.lyhout.ecommerce.customer.domain.exception.CustomerDomainException;
+import co.istad.lyhout.ecommerce.customer.domain.port.output.CustomerRepository;
 import co.istad.lyhout.ecommerce.customer.domain.service.CustomerDomainService;
+import co.istad.haklyhout.ecommerce.domain.valueobject.CustomerId;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ public class DeactivateCustomerUseCase {
         log.info("Execute DeactivateCustomerUseCase : {}", deactivateCustomerCommand);
 
         Customer customer = customerRepository.findById(new CustomerId(deactivateCustomerCommand.customerId()))
-                .orElseThrow(() -> new CustomerNotFoundException(
+                .orElseThrow(() -> new CustomerDomainException(
                         "Customer not found: " + deactivateCustomerCommand.customerId()));
 
         CustomerDeactivatedEvent customerDeactivatedEvent = customerDomainService.deactivateCustomer(customer);

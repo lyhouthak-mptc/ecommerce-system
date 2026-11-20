@@ -2,14 +2,16 @@ package co.istad.lyhout.ecommerce.customer.persistence.adapter;
 
 import co.istad.lyhout.ecommerce.core.PageResponse;
 import co.istad.lyhout.ecommerce.customer.domain.dto.CustomerResult;
+import co.istad.lyhout.ecommerce.customer.domain.entity.Customer;
 import co.istad.lyhout.ecommerce.customer.domain.port.output.CustomerRepository;
 import co.istad.lyhout.ecommerce.customer.persistence.entity.CustomerEntity;
 import co.istad.lyhout.ecommerce.customer.persistence.mapper.CustomerPersistenceMapper;
 import co.istad.lyhout.ecommerce.customer.persistence.repository.CustomerJpaRepository;
 import co.istad.haklyhout.ecommerce.domain.valueobject.CustomerId;
-import co.istad.lyhout.ecommerce.customer.domain.entity.Customer;
-import feign.Feign;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,9 +22,19 @@ import java.util.Optional;
 @Repository
 @RequiredArgsConstructor
 public class CustomerRepositoryAdapter implements CustomerRepository {
+
     private final CustomerJpaRepository customerJpaRepository;
     private final CustomerPersistenceMapper customerPersistenceMapper;
 
+
+    @CacheEvict(cacheNames = "customer", key = "#customerId.value")
+    @Override
+    public void deleteById(CustomerId customerId) {
+        customerJpaRepository.deleteById(customerId.value());
+    }
+
+
+    @Cacheable(key = "'allCustomers'", value = "customer")
     @Override
     public PageResponse<CustomerResult> findAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -39,23 +51,24 @@ public class CustomerRepositoryAdapter implements CustomerRepository {
     }
 
 
-
+    @CachePut(key = "#customer.id.value", cacheNames = "customer")
     @Override
-    public Customer save(Customer customer) {
+    public CustomerResult save(Customer customer) {
         CustomerEntity savedEntity = customerJpaRepository.save(
                 customerPersistenceMapper.customerToCustomerEntity(customer));
-        return customerPersistenceMapper.customerEntityToCustomer(savedEntity);
+        return customerPersistenceMapper.customerEntityToCustomerResult(savedEntity);
+    }
+
+    @Cacheable(cacheNames = "customer", key = "#customerId.value")
+    @Override
+    public Optional<CustomerResult> findByIdWithCache(CustomerId customerId) {
+        return customerJpaRepository.findById(customerId.value())
+                .map(customerPersistenceMapper::customerEntityToCustomerResult);
     }
 
     @Override
     public Optional<Customer> findById(CustomerId customerId) {
         return customerJpaRepository.findById(customerId.value())
-                .map(customerPersistenceMapper::customerEntityToCustomer);
-    }
-
-    @Override
-    public Optional<Customer> findCustomerByUserId(String userId) {
-        return customerJpaRepository.findByUserId(userId)
                 .map(customerPersistenceMapper::customerEntityToCustomer);
     }
 

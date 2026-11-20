@@ -12,23 +12,25 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-public class OrderDomainServiceImpl implements OrderDomainService{
+
+public class OrderDomainServiceImpl implements OrderDomainService {
 
     @Override
     public OrderCreatedEvent validateAndInitiateOrder(Order order, Business business) {
-//      validate business
+        // Validate business
         if (!business.isActive()) {
-            throw new OrderDomainException("Business with ID: " + business.getId().value() + " is not currently active");
+            throw new OrderDomainException("Business wit ID: " +  business.getId() + "is not currently active");
         }
 
-        // Use the business's confirmed product name and price, not the values sent by the client
+        // Set order product information
         order.getItems().forEach(orderItem -> {
-            Product currentProduct = orderItem.getProduct();
-            business.getProducts().stream()
-                    .filter(businessProduct -> businessProduct.equals(currentProduct))
-                    .findFirst()
-                    .ifPresent(businessProduct -> currentProduct.updateConfirmedNameAndPrice(
-                            businessProduct.getName(), businessProduct.getPrice()));
+            business.getProducts().forEach(businessProduct -> {
+                Product currentProduct = orderItem.getProduct();
+                if (businessProduct.equals(currentProduct)) {
+                    currentProduct.updateConfirmedNameAndPrice(businessProduct.getName(),
+                            businessProduct.getPrice());
+                }
+            });
         });
 
         order.validateOrder();
@@ -58,5 +60,4 @@ public class OrderDomainServiceImpl implements OrderDomainService{
     public void cancelOrder(Order order, List<String> failureMessages) {
         order.cancel(failureMessages);
     }
-
 }

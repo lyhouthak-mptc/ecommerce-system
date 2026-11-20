@@ -1,16 +1,16 @@
 package co.istad.lyhout.ecommerce.user.controller;
 
-import co.istad.lyhout.ecommerce.user.biz.service.UserService;
+import co.istad.lyhout.ecommerce.core.PageResponse;
 import co.istad.lyhout.ecommerce.user.dto.UserCreateRequest;
 import co.istad.lyhout.ecommerce.user.dto.UserResponse;
 import co.istad.lyhout.ecommerce.user.dto.UserUpdateRequest;
+import co.istad.lyhout.ecommerce.user.service.UserService;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -25,50 +25,68 @@ public class UserController {
         return userService.create(userCreateRequest);
     }
 
+
+    @PatchMapping("/{id}")
+    public UserResponse update(@PathVariable String id,
+                               @RequestBody UserUpdateRequest userUpdateRequest) {
+        return userService.update(id, userUpdateRequest);
+    }
+
+
+    @GetMapping("/{id}")
+    public UserResponse getById(@PathVariable String id) {
+        return userService.getById(id);
+    }
+
+
+    @GetMapping("/username/{username}")
+    public UserResponse getByUsername(@PathVariable String username) {
+        return userService.getByUsername(username);
+    }
+
+
+    @GetMapping("/roles/{roleName}")
+    public PageResponse<UserResponse> getUsersByRoleName(@PathVariable String roleName,
+                                                         @RequestParam(defaultValue = "0", required = false) int pageNumber,
+                                                         @RequestParam(defaultValue = "15", required = false) int pageSize) {
+        return userService.getUsersByRoleName(roleName, PageRequest.of(pageNumber, pageSize));
+    }
+
+
     @SentinelResource(
             value = "getUsers",
             fallback = "getUsersFallback"
     )
     @GetMapping
-    public List<UserResponse> getUsers() {
-        // Slow on purpose to test the Sentinel circuit breaker
+    public PageResponse<UserResponse> getUsers(@RequestParam(defaultValue = "0", required = false) int pageNumber,
+                                               @RequestParam(defaultValue = "15", required = false) int pageSize) {
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        return userService.getUsers();
+        return userService.getUsers(PageRequest.of(pageNumber, pageSize));
     }
+//
+//    public PageResponse<UserResponse> getUsersFallback(int pageNumber, int pageSize) {
+//        return null;
+//    }
+//
+//    public PageResponse<UserResponse> getUsersBlocked(int pageNumber,
+//                                               int pageSize,
+//                                               BlockException e) {
+//        IO.print(e.getMessage());
+//        return PageResponse.<UserResponse>builder()
+//                .items(List.of())
+//                .build();
+//    }
 
-    public List<UserResponse> getUsersFallback(Throwable t) {
-        return List.of();
-    }
-
-    @GetMapping("/roles/{roleName}")
-    public List<UserResponse> getUsersByRoleName(@PathVariable String roleName) {
-        return userService.getUsersByRoleName(roleName);
-    }
-
-    @GetMapping("/{id}")
-    public UserResponse getUserById(@PathVariable String id) {
-        return userService.getUserById(id);
-    }
-
-    @GetMapping("/username/{username}")
-    public UserResponse getUserByUsername(@PathVariable String username) {
-        return userService.getUserByUsername(username);
-    }
-
-    @PatchMapping("/{id}")
-    public UserResponse updateUser(@PathVariable String id,
-                                   @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
-        return userService.updateUser(id, userUpdateRequest);
-    }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable String id) {
-        userService.deleteUser(id);
+    public void deleteById(@PathVariable String id) {
+        userService.deleteById(id);
     }
+
 
 }

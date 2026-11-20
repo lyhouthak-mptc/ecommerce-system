@@ -1,18 +1,19 @@
 package co.istad.lyhout.ecommerce.customer.persistence.mapper;
 
 import co.istad.lyhout.ecommerce.customer.domain.dto.CustomerResult;
+import co.istad.lyhout.ecommerce.customer.domain.entity.Customer;
 import co.istad.lyhout.ecommerce.customer.persistence.entity.CustomerEntity;
 import co.istad.haklyhout.ecommerce.domain.valueobject.PhoneNumber;
-import co.istad.lyhout.ecommerce.customer.domain.entity.Customer;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 public interface CustomerPersistenceMapper {
+
     @Mapping(source="id.value", target = "id")
     @Mapping(source="email.value", target = "email")
-    @Mapping(source="phoneNumber.number", target = "phoneNumber")
+    @Mapping(source="phoneNumber.value", target = "phoneNumber")
     CustomerEntity customerToCustomerEntity(Customer customer);
 
 
@@ -27,4 +28,7 @@ public interface CustomerPersistenceMapper {
     }
 
     CustomerResult toCustomerResult(CustomerEntity customerEntity);
+
+    CustomerResult customerEntityToCustomerResult(CustomerEntity customerEntity);
+
 }

@@ -22,7 +22,6 @@ public class GatewaySecurityConfig {
     SecurityWebFilterChain gatewayFilterChain(ServerHttpSecurity http) {
 
         http.authorizeExchange(exchange -> exchange
-
                 .pathMatchers("/auth/**", "/products", "/profile").authenticated()
                 //.pathMatchers( "/index.html", "/assets/**", "/favicon.ico").permitAll()
                 //.pathMatchers("/","/business/**", "/about/**").permitAll()

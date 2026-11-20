@@ -16,22 +16,23 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class NacosConfigController {
 
-    private final NacosConfigProps nacosConfigProps;
+   private final NacosConfigProps nacosConfigProps;
 
     @GetMapping
     public Map<String, Object> getConfig() {
         return Map.of(
                 "serviceName", nacosConfigProps.getName(),
-                "serviceInfo", nacosConfigProps.getBasicInfo(),
+                "serviceBasicInfo", nacosConfigProps.getBasicInfo(),
                 "serviceVersion", nacosConfigProps.getVersion()
         );
     }
 
     @GetMapping("/secured")
     public Map<String, Object> getSecuredConfig(@AuthenticationPrincipal Jwt jwt) {
+        System.out.println("getSecuredConfig: " + jwt.getTokenValue());
         return Map.of(
                 "serviceName", nacosConfigProps.getName(),
-                "serviceInfo", nacosConfigProps.getBasicInfo(),
+                "serviceBasicInfo", nacosConfigProps.getBasicInfo(),
                 "serviceVersion", nacosConfigProps.getVersion(),
                 "accessToken", jwt.getTokenValue()
         );

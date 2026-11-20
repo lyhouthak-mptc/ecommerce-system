@@ -1,17 +1,29 @@
-#change customer service running port
+feign:
+  sentinel:
+    enabled: true
 
+# Change order service running port
 server:
-  port: 0
+  port: 8551
   forward-headers-strategy: framework
 
 spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+#  cache:
+#    type: redis
+#    redis:
+#      time-to-live: 10m        # default TTL for all caches
+#      cache-null-values: false
   application:
     name: customer-service
   profiles:
     active: dev
   config:
     import:
-      - optional:nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
+      - nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
   cloud:
     nacos:
       config:
@@ -20,8 +32,8 @@ spring:
       discovery:
         namespace: ${spring.profiles.active}
       username: nacos
-      password: Hout$363636
-      server-addr: localhost:8848
+      password: qwer
+      server-addr: 127.0.0.1:8848
     sentinel:
       transport:
         dashboard: localhost:8081
@@ -40,15 +52,3 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
-# API Documentation (OpenAPI / Swagger UI)
-springdoc:
-  api-docs:
-    enabled: true
-    path: /v3/api-docs
-  swagger-ui:
-    enabled: true
-    path: /swagger-ui.html
-feign:
-  sentinel:
-    enabled: true

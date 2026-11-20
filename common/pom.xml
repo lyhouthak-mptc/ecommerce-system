@@ -6,23 +6,17 @@
     <parent>
         <groupId>co.istad.haklyhout</groupId>
         <artifactId>ecommerce-system</artifactId>
-        <version>1.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>common</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>common-domain</module>
         <module>common-starter</module>
+        <module>common-domain</module>
         <module>common-restapi</module>
         <module>common-persistence</module>
+        <module>common-core</module>
     </modules>
-
-    <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
 </project>

@@ -5,12 +5,12 @@ import co.istad.lyhout.ecommerce.customer.client.exception.UserServiceUnavailabl
 import co.istad.lyhout.ecommerce.customer.client.feign.UserFeignClient;
 import co.istad.lyhout.ecommerce.customer.domain.dto.CreateCustomerCommand;
 import co.istad.lyhout.ecommerce.customer.domain.dto.CreateCustomerResult;
-import co.istad.lyhout.ecommerce.customer.domain.exception.CustomerAlreadyExistsException;
-import co.istad.lyhout.ecommerce.customer.domain.exception.CustomerDomainException;
-import co.istad.lyhout.ecommerce.customer.domain.mapper.CustomerDataMapper;
-import co.istad.lyhout.ecommerce.customer.domain.port.output.CustomerRepository;
+import co.istad.lyhout.ecommerce.customer.domain.dto.CustomerResult;
 import co.istad.lyhout.ecommerce.customer.domain.entity.Customer;
 import co.istad.lyhout.ecommerce.customer.domain.event.CustomerCreatedEvent;
+import co.istad.lyhout.ecommerce.customer.domain.exception.CustomerDomainException;
+import co.istad.lyhout.ecommerce.customer.domain.mapper.CustomerDomainMapper;
+import co.istad.lyhout.ecommerce.customer.domain.port.output.CustomerRepository;
 import co.istad.lyhout.ecommerce.customer.domain.service.CustomerDomainService;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-// Use case: register a new customer.
-// Called by the REST API controller (POST /api/v1/customers).
-// Flow: check duplicates -> build domain Customer -> domain validates & initiates -> save -> return new id
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -28,38 +25,41 @@ public class CreateCustomerUseCase {
 
     private final CustomerDomainService customerDomainService; // business rules (from customer-domain-core)
     private final CustomerRepository customerRepository;
-    private final CustomerDataMapper customerDataMapper;
+    private final CustomerDomainMapper customerDomainMapper;
+
     private final UserFeignClient userFeignClient;
 
-    @Transactional // everything below runs in one DB transaction: if anything fails, nothing is saved
+    @Transactional
     public CreateCustomerResult execute(CreateCustomerCommand createCustomerCommand) {
         log.info("Execute CreateCustomerUseCase : {}", createCustomerCommand);
 
-        // ACL
+        // ACL - verify user with user-service
         try {
-            UserResponse userResponse = userFeignClient.getUserById(createCustomerCommand.userId());
+            UserResponse userResponse = userFeignClient.getById(createCustomerCommand.userId());
+            log.info("User found: {}", userResponse);
         } catch (FeignException.NotFound e) {
-            throw new CustomerDomainException("user not found");
+            throw new CustomerDomainException("User not found");
         } catch (UserServiceUnavailableException e) {
-            throw new UserServiceUnavailableException(e.getMessage());
+            throw new CustomerDomainException(e.getMessage());
         }
 
         if (customerRepository.existsByUsername(createCustomerCommand.username())) {
-            throw new CustomerAlreadyExistsException("Username already exists");
+            throw new CustomerDomainException("Username already exists");
         }
+
         if (customerRepository.existsByEmail(createCustomerCommand.email())) {
-            throw new CustomerAlreadyExistsException("Email already exists");
+            throw new CustomerDomainException("Email already exists");
         }
 
-        Customer customer = customerDataMapper.createCustomerCommandToCustomer(createCustomerCommand);
-
+        Customer customer = customerDomainMapper.createCustomerCommandToCustomer(createCustomerCommand);
         CustomerCreatedEvent customerCreatedEvent = customerDomainService.validateAndInitiateCustomer(customer);
+        CustomerResult savedCustomer = customerRepository.save(customer);
 
-        Customer savedCustomer = customerRepository.save(customer);
+        if (savedCustomer == null) {
+            log.error("Could not save customer with id: {}", createCustomerCommand.customerId());
+            throw new CustomerDomainException("Could not save customer with id " + createCustomerCommand.customerId());
+        }
 
-        log.info("Customer created with id: {} at {}",
-                savedCustomer.getId().value(), customerCreatedEvent.getCreatedAt());
-
-        return new CreateCustomerResult(savedCustomer.getId().value());
+        return new CreateCustomerResult(savedCustomer.id());
     }
 }

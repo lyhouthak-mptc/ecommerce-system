@@ -3,6 +3,7 @@ package co.istad.lyhout.ecommerce.customer.domain.usecase;
 import co.istad.lyhout.ecommerce.core.PageResponse;
 import co.istad.lyhout.ecommerce.customer.domain.dto.CustomerResult;
 import co.istad.lyhout.ecommerce.customer.domain.dto.GetCustomersQuery;
+import co.istad.lyhout.ecommerce.customer.domain.port.output.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -11,8 +12,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 public class GetAllCustomersUseCase {
-    PageResponse<CustomerResult> execute(GetCustomersQuery query) {
-        log.info("Executing GetAllCustomerUseCase {}", query );
-        return null;
+
+    private final CustomerRepository customerRepository;
+
+    public PageResponse<CustomerResult> execute(GetCustomersQuery query) {
+        log.info("Executing GetAllCustomersUseCase: {}", query);
+        return customerRepository.findAll(query.page(), query.size());
     }
 }

@@ -7,8 +7,6 @@ public record CustomerResult(
         String familyName,
         String givenName,
         String email,
-        String phoneNumber,
-        int totalPage,
-        int totalSize
+        String phoneNumber
 ) {
 }

@@ -1,7 +1,6 @@
-#change gateway service running port
-
 server:
   port: 8585
+
 
 spring:
   application:
@@ -14,21 +13,32 @@ spring:
       port: 6379
   config:
     import:
-      - optional:nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
+      - nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
   cloud:
     gateway:
       server:
         webflux:
 #          routes:
+#            - id: swagger-ui
+#              uri: http://localhost:8585
+#              predicates:
+#                - Path=/swagger-ui/**
+#              filters:
+#                - RewritePath=/swagger-ui/?(?<segment>.*), /swagger-ui/$\{segment}
 #            - id: vuejs
-#              uri: http://[::1]:5173
-#              # catch-all for the frontend: run after the service routes
-#              order: 10000
+#              uri: http://[::1]:5173 #http://localhost:5173
+#              #uri: http://localhost:3000
 #              predicates:
 #                - Path=/**
+#            - id: order-service
+#              uri: lb://order-service # lb=load balance, order-service is application name
+#              predicates:
+#                - Path=/mptc-order-service/**
+#              filters:
+#                - RewritePath=/mptc-order-service/?(?<segment>.*), /$\{segment}
           discovery:
             locator:
-              enabled: true
+              enabled: true # enable to work with nacos service discovery
               lower-case-service-id: true
           trusted-proxies: ".*"
           default-filters:
@@ -41,8 +51,8 @@ spring:
       discovery:
         namespace: ${spring.profiles.active}
       username: nacos
-      password: Hout$363636
-      server-addr: localhost:8848
+      password: qwer
+      server-addr: 127.0.0.1:8848
     sentinel:
       transport:
         dashboard: localhost:8081
@@ -50,13 +60,13 @@ spring:
       eager: true
       web-context-unify: false
       datasource:
-        sentinel-flow: # name of datasource
-          nacos: # dynamic datasource with nacos
-            server-addr: 127.0.0.1:8848        # link to nacos
-            data-id: sentinel-flow                # data-id of config file in nacos
-            namespace: ${spring.profiles.active}                        # namespace in nacos
-            group-id: DEFAULT_GROUP            # group-id in nacos
-            data-type: json                        # config format in nacos
+        sentinel-flow:
+          nacos:
+            server-addr: 127.0.0.1:8848
+            data-id: sentinel-flow
+            namespace: ${spring.profiles.active}
+            group-id: DEFAULT_GROUP
+            data-type: json
             rule-type: flow
         sentinel-degrade:
           nacos:
@@ -66,7 +76,6 @@ spring:
             group-id: DEFAULT_GROUP
             data-type: json
             rule-type: degrade
-
   security:
     oauth2:
       client:
@@ -94,36 +103,24 @@ management:
     gateway:
       access: read_only
 
-# Scalar UI - aggregate docs of all services
 scalar:
   sources:
     - title: Order Service
       url: /order-service/v3/api-docs
-    - title: Payment Service
-      url: /payment-service/v3/api-docs
-    - title: Business Service
-      url: /business-service/v3/api-docs
     - title: Customer Service
       url: /customer-service/v3/api-docs
     - title: User Service
       url: /user-service/v3/api-docs
 
-# API Documentation (OpenAPI / Swagger UI) - aggregate docs of all services
-# Each url goes through the discovery locator route: /{service-id}/v3/api-docs
 springdoc:
-  api-docs:
-    enabled: true
   swagger-ui:
-    enabled: true
-    path: /swagger-ui.html
     urls:
-      - name: order-service
+      - name: Order Service
         url: /order-service/v3/api-docs
-      - name: payment-service
-        url: /payment-service/v3/api-docs
-      - name: business-service
-        url: /business-service/v3/api-docs
-      - name: customer-service
+      - name: Customer Service
         url: /customer-service/v3/api-docs
-      - name: user-service
+      - name: User Service
         url: /user-service/v3/api-docs
+    #enabled: false
+  #api-docs:
+    #enabled: false
